@@ -10,7 +10,7 @@ import { PRODUCTS, ARTICLES, Product, Article } from "./data/content";
 const EASE = [0.16, 1, 0.3, 1];
 
 // --- Assets ---
-const LOGO_ICON = "https://i.postimg.cc/TPQVN5Q5/32e2d245-875e-4441-9d0c-b444f8d30318.png";
+const LOGO_ICON = "/logo.png";
 const LOGO_LANDSCAPE = "https://i.postimg.cc/wv7whkHB/56388593474.png";
 const LOGO_TEXT = "https://i.postimg.cc/gkRBS4hh/image-(4).png";
 
