@@ -14,8 +14,53 @@ const LOGO_ICON = "https://i.postimg.cc/TPQVN5Q5/32e2d245-875e-4441-9d0c-b444f8d
 const LOGO_LANDSCAPE = "https://i.postimg.cc/wv7whkHB/56388593474.png";
 const LOGO_TEXT = "https://i.postimg.cc/gkRBS4hh/image-(4).png";
 
+// Route definitions & URL path helpers
+export const NAV_ROUTES = [
+  { id: "home", label: "Home", path: "/" },
+  { id: "products", label: "Products", path: "/product" },
+  { id: "about", label: "About", path: "/about" },
+  { id: "articles", label: "Articles", path: "/articles" },
+  { id: "contact", label: "Contact", path: "/contact" },
+];
+
+export const idToPath = (id: string): string => {
+  switch (id) {
+    case "products":
+      return "/product";
+    case "about":
+      return "/about";
+    case "articles":
+      return "/articles";
+    case "contact":
+      return "/contact";
+    case "home":
+    default:
+      return "/";
+  }
+};
+
+export const pathToRoute = (pathname: string) => {
+  const clean = pathname.toLowerCase().replace(/\/+$/, "") || "/";
+  if (clean.startsWith("/article/")) {
+    const articleId = clean.replace("/article/", "");
+    return { type: "article" as const, articleId };
+  }
+  if (clean === "/product" || clean === "/products") {
+    return { type: "section" as const, id: "products" };
+  }
+  if (clean === "/about") {
+    return { type: "section" as const, id: "about" };
+  }
+  if (clean === "/articles") {
+    return { type: "section" as const, id: "articles" };
+  }
+  if (clean === "/contact") {
+    return { type: "section" as const, id: "contact" };
+  }
+  return { type: "section" as const, id: "home" };
+};
+
 // Animation Variants
-// Hero choreographed entrance variants
 const heroContainerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -173,7 +218,7 @@ const MagneticButton = ({ children, className = "", onClick, href, external }: {
   );
 };
 
-const Navbar = ({ onNavigate }: { onNavigate: (id: string) => void }) => {
+const Navbar = ({ onNavigate, hasLoadedInitial }: { onNavigate: (id: string) => void, hasLoadedInitial: boolean }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -183,21 +228,17 @@ const Navbar = ({ onNavigate }: { onNavigate: (id: string) => void }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (e: React.MouseEvent, id: string) => {
+  const handleNavClick = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     onNavigate(id);
     setIsMobileMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
   };
 
   return (
     <motion.nav 
-      initial={{ y: -24, opacity: 0 }}
+      initial={hasLoadedInitial ? { y: 0, opacity: 1 } : { y: -24, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 1.2, ease: EASE, delay: 0.15 }}
+      transition={{ duration: 1.2, ease: EASE, delay: hasLoadedInitial ? 0 : 0.15 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "bg-[#030303]/80 backdrop-blur-2xl py-4 border-b border-white/5 shadow-2xl" : "bg-transparent py-6"}`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -205,7 +246,7 @@ const Navbar = ({ onNavigate }: { onNavigate: (id: string) => void }) => {
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.98 }}
           className="flex items-center gap-3 group cursor-pointer" 
-          onClick={(e) => scrollToSection(e, "home")}
+          onClick={(e) => handleNavClick(e, "home")}
         >
           <div className="relative">
             <div className="absolute inset-0 bg-primary/20 blur-xl group-hover:bg-primary/50 transition-all duration-500" />
@@ -215,17 +256,17 @@ const Navbar = ({ onNavigate }: { onNavigate: (id: string) => void }) => {
         </motion.div>
         
         <div className="hidden md:flex items-center gap-8 text-xs font-medium text-gray-400 uppercase tracking-widest">
-          {["home", "products", "about", "articles", "contact"].map((item, index) => (
+          {NAV_ROUTES.map((route, index) => (
             <motion.a 
-              key={item} 
-              href={`#${item}`} 
-              onClick={(e) => scrollToSection(e, item)}
-              initial={{ opacity: 0, y: -10 }}
+              key={route.id} 
+              href={route.path} 
+              onClick={(e) => handleNavClick(e, route.id)}
+              initial={hasLoadedInitial ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.12 * index + 0.2, duration: 0.7, ease: EASE }}
+              transition={{ delay: hasLoadedInitial ? 0 : (0.12 * index + 0.2), duration: 0.7, ease: EASE }}
               className="hover:text-white transition-colors duration-300 relative group py-1"
             >
-              {item}
+              {route.label}
               <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-gradient-to-r from-primary to-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </motion.a>
           ))}
@@ -246,21 +287,21 @@ const Navbar = ({ onNavigate }: { onNavigate: (id: string) => void }) => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.4, ease: EASE }}
+            transition={{ duration: 0.35, ease: EASE }}
             className="md:hidden bg-[#050505]/98 backdrop-blur-2xl border-b border-white/10 overflow-hidden"
           >
             <div className="flex flex-col p-6 gap-5 text-xs font-medium text-gray-400 uppercase tracking-widest">
-              {["home", "products", "about", "articles", "contact"].map((item, i) => (
+              {NAV_ROUTES.map((route, i) => (
                 <motion.a 
-                  key={item} 
-                  href={`#${item}`} 
-                  onClick={(e) => scrollToSection(e, item)} 
+                  key={route.id} 
+                  href={route.path} 
+                  onClick={(e) => handleNavClick(e, route.id)} 
                   initial={{ opacity: 0, x: -15 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.05 * i }}
                   className="hover:text-white py-2 border-b border-white/5 last:border-none flex items-center justify-between"
                 >
-                  <span>{item}</span>
+                  <span>{route.label}</span>
                   <ChevronRight className="w-4 h-4 text-gray-600" />
                 </motion.a>
               ))}
@@ -272,26 +313,26 @@ const Navbar = ({ onNavigate }: { onNavigate: (id: string) => void }) => {
   );
 };
 
-const Hero = ({ onNavigate }: { onNavigate: (id: string) => void }) => {
+const Hero = ({ onNavigate, hasLoadedInitial }: { onNavigate: (id: string) => void, hasLoadedInitial: boolean }) => {
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center pt-24 pb-20 overflow-hidden">
       {/* Background glow arriving with silky transition */}
       <motion.div 
-        initial={{ opacity: 0, scale: 0.88 }}
+        initial={hasLoadedInitial ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.88 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.8, ease: EASE }}
         className="absolute inset-0 hero-glow pointer-events-none" 
       />
       <motion.div 
-        initial={{ opacity: 0 }}
+        initial={hasLoadedInitial ? { opacity: 1 } : { opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1.6, delay: 0.1, ease: EASE }}
+        transition={{ duration: 1.6, delay: hasLoadedInitial ? 0 : 0.1, ease: EASE }}
         className="hero-grid" 
       />
       
       {/* Animated ambient orbs */}
       <motion.div 
-        initial={{ opacity: 0 }}
+        initial={hasLoadedInitial ? { opacity: 0.16 } : { opacity: 0 }}
         animate={{ 
           scale: [1, 1.2, 1],
           opacity: [0.12, 0.22, 0.12],
@@ -299,7 +340,7 @@ const Hero = ({ onNavigate }: { onNavigate: (id: string) => void }) => {
           y: [0, -30, 0]
         }}
         transition={{ 
-          opacity: { duration: 1.5 },
+          opacity: { duration: hasLoadedInitial ? 0 : 1.5 },
           scale: { duration: 12, repeat: Infinity, ease: "easeInOut" },
           x: { duration: 12, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 12, repeat: Infinity, ease: "easeInOut" }
@@ -307,7 +348,7 @@ const Hero = ({ onNavigate }: { onNavigate: (id: string) => void }) => {
         className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/15 blur-[140px] rounded-full pointer-events-none" 
       />
       <motion.div 
-        initial={{ opacity: 0 }}
+        initial={hasLoadedInitial ? { opacity: 0.14 } : { opacity: 0 }}
         animate={{ 
           scale: [1, 1.25, 1],
           opacity: [0.1, 0.18, 0.1],
@@ -315,7 +356,7 @@ const Hero = ({ onNavigate }: { onNavigate: (id: string) => void }) => {
           y: [0, 25, 0]
         }}
         transition={{ 
-          opacity: { duration: 1.5, delay: 0.2 },
+          opacity: { duration: hasLoadedInitial ? 0 : 1.5, delay: hasLoadedInitial ? 0 : 0.2 },
           scale: { duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 },
           x: { duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 },
           y: { duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }
@@ -325,7 +366,7 @@ const Hero = ({ onNavigate }: { onNavigate: (id: string) => void }) => {
       
       <div className="max-w-5xl mx-auto px-6 relative z-10 text-center">
         <motion.div
-          initial="hidden"
+          initial={hasLoadedInitial ? "visible" : "hidden"}
           animate="visible"
           variants={heroContainerVariants}
           className="flex flex-col items-center"
@@ -392,12 +433,12 @@ const Hero = ({ onNavigate }: { onNavigate: (id: string) => void }) => {
   );
 };
 
-const ProductSection = () => {
+const ProductSection = ({ hasLoadedInitial }: { hasLoadedInitial: boolean }) => {
   return (
     <section id="products" className="py-32 relative">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div 
-          initial="hidden"
+          initial={hasLoadedInitial ? "visible" : "hidden"}
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={fadeUpVariants}
@@ -414,7 +455,7 @@ const ProductSection = () => {
         </motion.div>
 
         <motion.div 
-          initial="hidden"
+          initial={hasLoadedInitial ? "visible" : "hidden"}
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
           variants={staggerContainerVariants}
@@ -466,14 +507,14 @@ const ProductSection = () => {
   );
 };
 
-const AboutSection = () => {
+const AboutSection = ({ hasLoadedInitial }: { hasLoadedInitial: boolean }) => {
   return (
     <section id="about" className="py-32 bg-white/[0.02] border-y border-white/5 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[140px] rounded-full pointer-events-none" />
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-20 items-center">
           <motion.div
-            initial="hidden"
+            initial={hasLoadedInitial ? "visible" : "hidden"}
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={staggerContainerVariants}
@@ -500,14 +541,12 @@ const AboutSection = () => {
                     "The name came from the search itself. While looking for the right name, no name felt right. After searching and finding nothing suitable, the idea became the name: <strong className="text-white not-italic">Unfoundid</strong>."
                   </p>
                 </div>
-
-              
               </motion.div>
             </div>
           </motion.div>
           
           <motion.div 
-            initial="hidden"
+            initial={hasLoadedInitial ? "visible" : "hidden"}
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={staggerContainerVariants}
@@ -546,12 +585,12 @@ const AboutSection = () => {
   );
 };
 
-const ArticlesSection = ({ onArticleClick }: { onArticleClick: (a: Article) => void }) => {
+const ArticlesSection = ({ onArticleClick, hasLoadedInitial }: { onArticleClick: (a: Article) => void, hasLoadedInitial: boolean }) => {
   return (
     <section id="articles" className="py-32">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
-          initial="hidden"
+          initial={hasLoadedInitial ? "visible" : "hidden"}
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={fadeUpVariants}
@@ -565,7 +604,7 @@ const ArticlesSection = ({ onArticleClick }: { onArticleClick: (a: Article) => v
         </motion.div>
 
         <motion.div 
-          initial="hidden"
+          initial={hasLoadedInitial ? "visible" : "hidden"}
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
           variants={staggerContainerVariants}
@@ -645,12 +684,12 @@ const ArticleDetail = ({ article, onBack }: { article: Article, onBack: () => vo
   </div>
 );
 
-const ContactSection = () => {
+const ContactSection = ({ hasLoadedInitial }: { hasLoadedInitial: boolean }) => {
   return (
     <section id="contact" className="py-32 relative">
       <div className="max-w-4xl mx-auto px-6 text-center">
         <motion.div
-          initial="hidden"
+          initial={hasLoadedInitial ? "visible" : "hidden"}
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           variants={fadeUpVariants}
@@ -681,7 +720,7 @@ const ContactSection = () => {
   );
 };
 
-const Footer = () => (
+const Footer = ({ onNavigate }: { onNavigate: (id: string) => void }) => (
   <footer className="py-20 border-t border-white/5 bg-black/60 backdrop-blur-xl">
     <div className="max-w-7xl mx-auto px-6 text-center">
       <motion.div 
@@ -697,11 +736,19 @@ const Footer = () => (
       <p className="text-gray-400 text-sm mb-2">Building things worth using.</p>
       <p className="text-gray-500 text-xs mb-10">Unfoundid is a brand of Developair</p>
       <div className="flex justify-center flex-wrap gap-8 text-xs font-medium text-gray-500 uppercase tracking-widest mb-12">
-        <a href="#home" className="hover:text-white transition-colors">Home</a>
-        <a href="#products" className="hover:text-white transition-colors">Products</a>
-        <a href="#about" className="hover:text-white transition-colors">About</a>
-        <a href="#articles" className="hover:text-white transition-colors">Articles</a>
-        <a href="#contact" className="hover:text-white transition-colors">Contact</a>
+        {NAV_ROUTES.map((route) => (
+          <a 
+            key={route.id}
+            href={route.path}
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate(route.id);
+            }} 
+            className="hover:text-white transition-colors"
+          >
+            {route.label}
+          </a>
+        ))}
       </div>
       <p className="text-gray-600 text-[10px] tracking-widest uppercase">© 2026 Unfoundid · A brand of Developair · All rights reserved.</p>
     </div>
@@ -709,34 +756,153 @@ const Footer = () => (
 );
 
 export default function App() {
-  const [activePage, setActivePage] = useState<string | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [hasLoadedInitial, setHasLoadedInitial] = useState(false);
+  const isProgrammaticNav = useRef(false);
 
-  const navigateTo = (id: string) => {
+  // Lock animations after initial page load arrival finishes (plays only once until page refresh)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHasLoadedInitial(true);
+    }, 1800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Handle URL navigation and smooth scrolling
+  const navigateTo = (id: string, updateHistory = true) => {
+    isProgrammaticNav.current = true;
     setSelectedArticle(null);
-    setActivePage(id);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    const targetPath = idToPath(id);
+    if (updateHistory && window.location.pathname !== targetPath) {
+      window.history.pushState(null, "", targetPath);
     }
+
+    if (id === "home") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    setTimeout(() => {
+      isProgrammaticNav.current = false;
+    }, 900);
   };
 
   const handleArticleClick = (article: Article) => {
+    isProgrammaticNav.current = true;
     setSelectedArticle(article);
+    window.history.pushState(null, "", `/article/${article.id}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => {
+      isProgrammaticNav.current = false;
+    }, 500);
   };
+
+  const handleBackFromArticle = () => {
+    isProgrammaticNav.current = true;
+    setSelectedArticle(null);
+    window.history.pushState(null, "", "/articles");
+    setTimeout(() => {
+      const element = document.getElementById("articles");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      isProgrammaticNav.current = false;
+    }, 100);
+  };
+
+  // Synchronize on initial mount (direct URL support like /product, /about, /article/xxx)
+  useEffect(() => {
+    const route = pathToRoute(window.location.pathname);
+    if (route.type === "article" && route.articleId) {
+      const found = ARTICLES.find((a) => a.id === route.articleId);
+      if (found) {
+        setSelectedArticle(found);
+      }
+    } else if (route.type === "section" && route.id !== "home") {
+      setTimeout(() => {
+        const el = document.getElementById(route.id);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 300);
+    }
+
+    // Handle Browser Back / Forward buttons (popstate)
+    const handlePopState = () => {
+      const currentRoute = pathToRoute(window.location.pathname);
+      if (currentRoute.type === "article" && currentRoute.articleId) {
+        const found = ARTICLES.find((a) => a.id === currentRoute.articleId);
+        if (found) {
+          setSelectedArticle(found);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      } else {
+        setSelectedArticle(null);
+        if (currentRoute.id === "home") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          const el = document.getElementById(currentRoute.id);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  // Scroll Spy to keep the URL path updated as user scrolls through sections
+  useEffect(() => {
+    if (selectedArticle) return;
+
+    const sections = ["home", "products", "about", "articles", "contact"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (isProgrammaticNav.current) return;
+
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const sectionId = entry.target.id;
+            const targetPath = idToPath(sectionId);
+            if (window.location.pathname !== targetPath) {
+              window.history.replaceState(null, "", targetPath);
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.35,
+      }
+    );
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [selectedArticle]);
 
   return (
     <div className="bg-dark min-h-screen selection:bg-primary/30 text-gray-200 relative">
-      {/* Silky arrival dissipation curtain */}
-      <motion.div 
-        initial={{ opacity: 1 }}
-        animate={{ opacity: 0 }}
-        transition={{ duration: 1.2, ease: EASE }}
-        className="pointer-events-none fixed inset-0 z-[100] bg-[#030303]"
-      />
+      {/* Silky arrival dissipation curtain - only plays on fresh page load */}
+      {!hasLoadedInitial && (
+        <motion.div 
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 0 }}
+          transition={{ duration: 1.2, ease: EASE }}
+          className="pointer-events-none fixed inset-0 z-[100] bg-[#030303]"
+        />
+      )}
 
-      <Navbar onNavigate={navigateTo} />
+      <Navbar onNavigate={navigateTo} hasLoadedInitial={hasLoadedInitial} />
       
       <main>
         <AnimatePresence mode="wait">
@@ -748,27 +914,27 @@ export default function App() {
               exit={{ opacity: 0, y: -25, filter: "blur(8px)" }}
               transition={{ duration: 0.55, ease: EASE }}
             >
-              <ArticleDetail article={selectedArticle} onBack={() => setSelectedArticle(null)} />
+              <ArticleDetail article={selectedArticle} onBack={handleBackFromArticle} />
             </motion.div>
           ) : (
             <motion.div
               key="main-portal"
-              initial={{ opacity: 0 }}
+              initial={hasLoadedInitial ? { opacity: 1 } : { opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, y: -20, filter: "blur(6px)" }}
-              transition={{ duration: 0.8, ease: EASE }}
+              transition={{ duration: hasLoadedInitial ? 0 : 0.8, ease: EASE }}
             >
-              <Hero onNavigate={navigateTo} />
-              <ProductSection />
-              <AboutSection />
-              <ArticlesSection onArticleClick={handleArticleClick} />
-              <ContactSection />
+              <Hero onNavigate={navigateTo} hasLoadedInitial={hasLoadedInitial} />
+              <ProductSection hasLoadedInitial={hasLoadedInitial} />
+              <AboutSection hasLoadedInitial={hasLoadedInitial} />
+              <ArticlesSection onArticleClick={handleArticleClick} hasLoadedInitial={hasLoadedInitial} />
+              <ContactSection hasLoadedInitial={hasLoadedInitial} />
             </motion.div>
           )}
         </AnimatePresence>
       </main>
 
-      <Footer />
+      <Footer onNavigate={navigateTo} />
     </div>
   );
 }
