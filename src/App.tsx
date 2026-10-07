@@ -132,47 +132,36 @@ const cardHoverVariants = {
 
 const SpotlightCard: React.FC<{ children: React.ReactNode, className?: string, onClick?: () => void }> = ({ children, className = "", onClick }) => {
   const divRef = useRef<HTMLDivElement>(null);
-  const [isFocused, setIsFocused] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [opacity, setOpacity] = useState(0);
+  const spotRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!divRef.current || isFocused) return;
-    const div = divRef.current;
-    const rect = div.getBoundingClientRect();
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    if (!divRef.current || !spotRef.current) return;
+    const rect = divRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    spotRef.current.style.background = `radial-gradient(650px circle at ${x}px ${y}px, rgba(255,255,255,0.07), transparent 40%)`;
   };
 
-  const handleFocus = () => {
-    setIsFocused(true);
-    setOpacity(1);
+  const handleMouseEnter = () => {
+    if (spotRef.current) spotRef.current.style.opacity = "1";
   };
 
-  const handleBlur = () => {
-    setIsFocused(false);
-    setOpacity(0);
+  const handleMouseLeave = () => {
+    if (spotRef.current) spotRef.current.style.opacity = "0";
   };
-
-  const handleMouseEnter = () => setOpacity(1);
-  const handleMouseLeave = () => setOpacity(0);
 
   return (
     <div
       ref={divRef}
       onMouseMove={handleMouseMove}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
-      className={`relative overflow-hidden rounded-[32px] glass glass-hover premium-border transition-all duration-500 ${className}`}
+      className={`relative overflow-hidden rounded-[32px] glass glass-hover premium-border transition-all duration-300 ${className}`}
     >
       <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 z-0"
-        style={{
-          opacity,
-          background: `radial-gradient(800px circle at ${position.x}px ${position.y}px, rgba(255,255,255,0.08), transparent 40%)`,
-        }}
+        ref={spotRef}
+        className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 z-0"
       />
       <div className="relative z-10 h-full flex flex-col">
         {children}
@@ -223,8 +212,17 @@ const Navbar = ({ onNavigate, hasLoadedInitial }: { onNavigate: (id: string) => 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -330,14 +328,14 @@ const Hero = ({ onNavigate, hasLoadedInitial }: { onNavigate: (id: string) => vo
         className="hero-grid" 
       />
       
-      {/* Animated ambient orbs */}
+      {/* Animated ambient orbs - GPU accelerated */}
       <motion.div 
-        initial={hasLoadedInitial ? { opacity: 0.16 } : { opacity: 0 }}
+        initial={hasLoadedInitial ? { opacity: 0.14 } : { opacity: 0 }}
         animate={{ 
-          scale: [1, 1.2, 1],
-          opacity: [0.12, 0.22, 0.12],
-          x: [0, 20, 0],
-          y: [0, -30, 0]
+          scale: [1, 1.15, 1],
+          opacity: [0.1, 0.18, 0.1],
+          x: [0, 15, 0],
+          y: [0, -20, 0]
         }}
         transition={{ 
           opacity: { duration: hasLoadedInitial ? 0 : 1.5 },
@@ -345,15 +343,15 @@ const Hero = ({ onNavigate, hasLoadedInitial }: { onNavigate: (id: string) => vo
           x: { duration: 12, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 12, repeat: Infinity, ease: "easeInOut" }
         }}
-        className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/15 blur-[140px] rounded-full pointer-events-none" 
+        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/12 blur-[90px] rounded-full pointer-events-none transform-gpu will-change-transform" 
       />
       <motion.div 
-        initial={hasLoadedInitial ? { opacity: 0.14 } : { opacity: 0 }}
+        initial={hasLoadedInitial ? { opacity: 0.12 } : { opacity: 0 }}
         animate={{ 
-          scale: [1, 1.25, 1],
-          opacity: [0.1, 0.18, 0.1],
-          x: [0, -25, 0],
-          y: [0, 25, 0]
+          scale: [1, 1.18, 1],
+          opacity: [0.08, 0.15, 0.08],
+          x: [0, -20, 0],
+          y: [0, 20, 0]
         }}
         transition={{ 
           opacity: { duration: hasLoadedInitial ? 0 : 1.5, delay: hasLoadedInitial ? 0 : 0.2 },
@@ -361,7 +359,7 @@ const Hero = ({ onNavigate, hasLoadedInitial }: { onNavigate: (id: string) => vo
           x: { duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 },
           y: { duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }
         }}
-        className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent/15 blur-[140px] rounded-full pointer-events-none" 
+        className="absolute bottom-1/4 right-1/4 w-[420px] h-[420px] bg-accent/12 blur-[90px] rounded-full pointer-events-none transform-gpu will-change-transform" 
       />
       
       <div className="max-w-5xl mx-auto px-6 relative z-10 text-center">
@@ -862,23 +860,28 @@ export default function App() {
   useEffect(() => {
     if (selectedArticle) return;
 
+    let ticking = false;
     const sections = ["home", "products", "about", "articles", "contact"];
     const observer = new IntersectionObserver(
       (entries) => {
         if (isProgrammaticNav.current) return;
 
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const sectionId = entry.target.id;
-            const targetPath = idToPath(sectionId);
-            if (window.location.pathname !== targetPath) {
-              window.history.replaceState(null, "", targetPath);
-            }
+          if (entry.isIntersecting && !ticking) {
+            ticking = true;
+            window.requestAnimationFrame(() => {
+              const sectionId = entry.target.id;
+              const targetPath = idToPath(sectionId);
+              if (window.location.pathname !== targetPath) {
+                window.history.replaceState(null, "", targetPath);
+              }
+              ticking = false;
+            });
           }
         });
       },
       {
-        threshold: 0.35,
+        threshold: 0.4,
       }
     );
 
