@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://unfoundid.vercel.app/sitemap.xml
+Sitemap: https://unfoundid.vercel.app/unfoundid-sitemap.xml
