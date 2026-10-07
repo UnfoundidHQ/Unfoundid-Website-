@@ -1,0 +1,7 @@
+{
+  "name": "Unfoundid",
+  "description": "Independent technology brand specialized in intelligent software and complex system design. We build useful products and tools for real-world problems.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
