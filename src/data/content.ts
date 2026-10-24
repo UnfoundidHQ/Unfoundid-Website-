@@ -37,8 +37,8 @@ export const PRODUCTS: Product[] = [
     id: 'unfoundscape',
     name: 'Unfoundscape',
     description: 'An experimental product within the Unfoundid ecosystem.',
-    status: 'Experimental',
-    url: 'https://unfoundscape.vercel.app', // Placeholder URL
+    status: 'Active',
+    url: 'https://unfoundscape.cyou', // Placeholder URL
     accentColor: '#7C3AED'
   }
 ] as any; // Using any for status string union flexibility
