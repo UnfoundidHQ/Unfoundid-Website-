@@ -526,7 +526,7 @@ const AboutSection = ({ hasLoadedInitial }: { hasLoadedInitial: boolean }) => {
             
             <div className="space-y-6 text-lg text-gray-400 font-light leading-relaxed">
               <motion.p variants={fadeUpVariants}>
-                Unfoundid is an independent technology brand focused on building useful software, tools, and experimental products. Unfoundid is a brand of Developeair and Founded By Asraful Islam Redwan .
+                Unfoundid is an independent technology brand focused on building useful software, tools, and experimental products. Unfoundid is a brand of <a href="https://www.developeair.cyou/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 underline underline-offset-4 decoration-white/30 hover:decoration-blue-400 transition-all">Developeair</a> and Founded By Asraful Islam Redwan.
               </motion.p>
               <motion.p variants={fadeUpVariants}>
                 The goal is simple: create things that are genuinely worth using. Unfoundid is not limited to one category. Products may explore AI, developer tools, productivity, research, automation, and other areas where technology can solve meaningful problems.
@@ -732,7 +732,7 @@ const Footer = ({ onNavigate }: { onNavigate: (id: string) => void }) => (
         <span className="text-xl font-display font-bold tracking-tighter text-white">Unfoundid</span>
       </motion.div>
       <p className="text-gray-400 text-sm mb-2">Building things worth using.</p>
-      <p className="text-gray-500 text-xs mb-10">Unfoundid is a brand of Developeair</p>
+      <p className="text-gray-500 text-xs mb-10">Unfoundid is a brand of <a href="https://www.developeair.cyou/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors underline underline-offset-4 decoration-white/20">Developeair</a></p>
       <div className="flex justify-center flex-wrap gap-8 text-xs font-medium text-gray-500 uppercase tracking-widest mb-12">
         {NAV_ROUTES.map((route) => (
           <a 
@@ -748,7 +748,7 @@ const Footer = ({ onNavigate }: { onNavigate: (id: string) => void }) => (
           </a>
         ))}
       </div>
-      <p className="text-gray-600 text-[10px] tracking-widest uppercase">© 2026 Unfoundid · A brand of Developeair · All rights reserved.</p>
+      <p className="text-gray-600 text-[10px] tracking-widest uppercase">© 2026 Unfoundid · A brand of <a href="https://www.developeair.cyou/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Developeair</a> · All rights reserved.</p>
     </div>
   </footer>
 );

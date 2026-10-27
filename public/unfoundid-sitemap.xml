@@ -2,78 +2,78 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://www.unfoundid.cyou/</loc>
-    <lastmod>2026-10-22</lastmod>
+    <loc>https://unfoundid.cyou/</loc>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://www.unfoundid.cyou/logo.png</image:loc>
+      <image:loc>https://unfoundid.cyou/logo.png</image:loc>
       <image:title>Unfoundid Official Dark Squircle Brand Emblem</image:title>
       <image:caption>Unfoundid High Resolution Official Logo</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://www.unfoundid.cyou/logo-bg.png</image:loc>
+      <image:loc>https://unfoundid.cyou/logo-bg.png</image:loc>
       <image:title>Unfoundid Transparent Brand Emblem</image:title>
       <image:caption>Unfoundid Web UI Transparent Emblem</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://www.unfoundid.cyou/favicon1.png</image:loc>
+      <image:loc>https://unfoundid.cyou/favicon1.png</image:loc>
       <image:title>Unfoundid Brand Favicon and App Icon</image:title>
       <image:caption>Unfoundid Symbol Favicon</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://www.unfoundid.cyou/unfoundid-banner.png</image:loc>
+      <image:loc>https://unfoundid.cyou/unfoundid-banner.png</image:loc>
       <image:title>Unfoundid Technology Ecosystem Banner</image:title>
       <image:caption>Unfoundid Landscape Brand Banner</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://www.unfoundid.cyou/unfoundid-wordmark.png</image:loc>
+      <image:loc>https://unfoundid.cyou/unfoundid-wordmark.png</image:loc>
       <image:title>Unfoundid Wordmark Typography</image:title>
       <image:caption>Unfoundid Official Typography Identity</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://www.unfoundid.cyou/product</loc>
-    <lastmod>2026-10-22</lastmod>
+    <loc>https://unfoundid.cyou/product</loc>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <image:image>
-      <image:loc>https://www.unfoundid.cyou/logo.png</image:loc>
+      <image:loc>https://unfoundid.cyou/logo.png</image:loc>
       <image:title>Unfoundid Products Ecosystem</image:title>
       <image:caption>Products built under Unfoundid</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://www.unfoundid.cyou/about</loc>
-    <lastmod>2026-10-22</lastmod>
+    <loc>https://unfoundid.cyou/about</loc>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://www.unfoundid.cyou/unfoundid-wordmark.png</image:loc>
+      <image:loc>https://unfoundid.cyou/unfoundid-wordmark.png</image:loc>
       <image:title>About Unfoundid</image:title>
       <image:caption>Philosophy and Story of Unfoundid</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://www.unfoundid.cyou/articles</loc>
-    <lastmod>2026-10-22</lastmod>
+    <loc>https://unfoundid.cyou/articles</loc>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.unfoundid.cyou/article/introducing-unfoundid</loc>
-    <lastmod>2026-10-22</lastmod>
+    <loc>https://unfoundid.cyou/article/introducing-unfoundid</loc>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://www.unfoundid.cyou/unfoundid-banner.png</image:loc>
+      <image:loc>https://unfoundid.cyou/unfoundid-banner.png</image:loc>
       <image:title>Introducing Unfoundid — A New Beginning</image:title>
       <image:caption>Article Banner for Introducing Unfoundid</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://www.unfoundid.cyou/contact</loc>
-    <lastmod>2026-10-22</lastmod>
+    <loc>https://unfoundid.cyou/contact</loc>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

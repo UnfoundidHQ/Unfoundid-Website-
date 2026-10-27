@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.unfoundid.cyou/unfoundid-sitemap.xml
+Sitemap: https://unfoundid.cyou/unfoundid-sitemap.xml
